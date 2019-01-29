@@ -1,0 +1,124 @@
+/*
+#idModal {
+    top: 0;
+    left: 0;
+    right: 0;
+    margin: auto !important;
+    position: absolute;
+}
+*/
+.hideTable {
+    opacity: 0;
+}
+
+.showTable {
+    opacity: 1;
+    resize: both;
+    overflow: no-content;
+}
+
+#wrapperidModal {
+    border: 1px solid #aaaaaa !important;
+}
+
+/*#columntableidModal {
+    border: solid 1px #aaaaaa ! important;
+    border-bottom: #D3D3D3 !important;
+    border-right: solid 4px #aaaaaa !important;
+}*/
+
+/*
+#contenttableidModal {
+/*    border: solid 1px #aaaaaa;
+    border-bottom: #D3D3D3 !important;*/
+/*
+    border-right: solid 2px #aaaaaa !important;
+}*/
+
+#saveButtonModal {
+    margin-right: 5px;
+}
+
+span.close {
+    color: rgb(255, 0, 0);
+}
+
+.modal {
+    width: 80%;
+    height: 80%;
+    margin: auto;
+    display: block;
+}
+
+.modal-content {
+    /*display: block;*/
+    height: 100%;
+    width: 100%;
+
+}
+
+/*
+.modal-dialog{
+    width: 80%;
+    height: 85%;
+}
+*/
+
+.modal-body {
+    height: calc(100% - 200px);
+    overflow-y: auto;
+    /*width: 100%;*/
+    /*
+    margin:auto;
+    */
+    /*
+    width: 100%;
+    height:90%;
+    */
+    /*height: -webkit-fill-available;*/
+
+    /*display: table-row;*/
+    /*display: inline-block;*/
+}
+
+.row {
+    padding: 15px;
+}
+
+.full-height {
+    height: 100%;
+}
+
+.btn-default {
+    margin-right: 5px;
+}
+
+.tabContainer {
+    position: absolute;
+    height: 80%;
+    bottom: 0;
+}
+
+.checkAllBoxModal {
+    position: absolute;
+    right: 38%;
+    bottom: 25%;
+    cursor: pointer;
+}
+
+.listMaxModal {
+    margin-right: 10px;
+}
+
+.listIndexModal {
+    max-width: 70px;
+    margin-right: 5px;
+    margin-left: -5px;
+}
+
+/** css for the form modal*/
+
+#navModalForm {
+    height: 60px;
+    margin-top: 15px;
+}

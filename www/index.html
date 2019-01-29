@@ -1,0 +1,237 @@
+<!--
+  ~ Record'in
+  ~
+  ~ Copyright (C) 2019 Blockchain Record'in Solutions
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <title>Record'in - The Blockchain Recording Solution</title>
+    <!-- Include CSS files -->
+    <link rel="stylesheet" type="text/css" href="/libcss/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="/libcss/orgchart.css">
+    <link rel="stylesheet" type="text/css"
+          href="/libcss/fontawesome-free-5.0.10/web-fonts-with-css/css/fontawesome-all.css">
+    <link rel="stylesheet" type="text/css" href="css/main.css">
+    <link rel="stylesheet" type="text/css" href="css/form.css">
+    <link rel="stylesheet" type="text/css" href="css/media.css">
+    <link rel="stylesheet" type="text/css" href="css/cells.css">
+    <link rel="stylesheet" type="text/css" href="css/navbar.css">
+    <link rel="stylesheet" type="text/css" href="css/modal.css">
+    <link rel="stylesheet" type="text/css" href="css/sidebar.css">
+    <link rel="stylesheet" type="text/css" href="css/menu.css">
+    <link rel="stylesheet" type="text/css" href="css/kanban.css">
+
+    <!-- Include JS  files -->
+    <script type="text/javascript" src="/libjs/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="/libjs/jquery/jquery-debounce.js"></script>
+    <script type="text/javascript" src="/libjs/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/libjs/notify.min.js"></script>
+    <script type="text/javascript" src="/libjs/orgchart/jquery.orgchart.min.js"></script>
+    <script type="text/javascript" src="/libjs/export/tableExport.js"></script>
+    <script type="text/javascript" src="/libjs/export/jspdf.js"></script>
+    <script type="text/javascript" src="/libjs/export/sprintf.js"></script>
+    <script type="text/javascript" src="/libjs/export/base64.js"></script>
+    <script type="text/javascript" src="/libjs/export/jquery.base64.js"></script>
+    <script type="text/javascript" src="javascript/WebSocketURL"></script>
+    <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/2.3.4/jspdf.plugin.autotable.js"></script>-->
+    <script type="text/javascript" src="/libjs/export/autotable.js"></script>
+    <!-- Include jqwidgets CSS files -->
+    <link rel="stylesheet" type="text/css" href="/jqwidgets/styles/jqx.base.css"/>
+    <!-- Include jqwidgets JS  files -->
+    <script type="text/javascript" src="/jqwidgets/jqxcore.js"></script>
+    <script type="text/javascript" src="/jqwidgets/jqxdata.js"></script>
+    <script type="text/javascript" src="/jqwidgets/jqxbuttons.js"></script>
+    <script type="text/javascript" src="/jqwidgets/jqxscrollbar.js"></script>
+    <script type="text/javascript" src="/jqwidgets/jqxmenu.js"></script>
+    <script type="text/javascript" src="/jqwidgets/jqxribbon.js"></script>
+    <script type="text/javascript" src="/jqwidgets/jqxlayout.js"></script>
+    <script type="text/javascript" src="/jqwidgets/jqxdockinglayout.js"></script>
+    <script type="text/javascript" src="/jqwidgets/jqxprogressbar.js"></script>
+    <script type="text/javascript" src="/jqwidgets/jqxdatatable.js"></script>
+    <script type="text/javascript" src="/jqwidgets/jqxtreegrid.js"></script>
+    <script type="text/javascript" src="/jqwidgets/jqxtree.js"></script>
+    <script type="text/javascript" src="/jqwidgets/jqxwindow.js"></script>
+    <script type="text/javascript" src="/jqwidgets/jqxlistbox.js"></script>
+    <script type="text/javascript" src="/jqwidgets/jqxdropdownlist.js"></script>
+    <script type="text/javascript" src="/jqwidgets/jqxnotification.js"></script>
+    <script type="text/javascript" src="/jqwidgets/jqxcombobox.js"></script>
+    <script type="text/javascript" src="/jqwidgets/jqxinput.js"></script>
+    <script type="text/javascript" src="/jqwidgets/jqxtoolbar.js"></script>
+    <script type="text/javascript" src="/jqwidgets/jqxcheckbox.js"></script>
+    <script type="text/javascript" src="/jqwidgets/jqxdata.export.js"></script>
+    <script type="text/javascript" src="/jqwidgets/jqxsortable.js"></script>
+    <script type="text/javascript" src="/jqwidgets/jqxpanel.js"></script>
+    <script type="text/javascript" src="/jqwidgets/jqxloader.js"></script>
+
+    <script type="text/javascript" src="/jqwidgets/jqxkanban.js"></script>
+    <script type="text/javascript" src="/jqwidgets/jqxtabs.js"></script>
+    <script type="text/javascript" src="/scripts/demos.js"></script>
+
+    <script type="text/javascript" src="/libjs/react/react.js"></script>
+    <script type="text/javascript" src="/libjs/react/reactDOM.js"></script>
+    <!--<script type="text/javascript" src="/libjs/babel-core.min.js"></script>-->
+    <script type="text/javascript" src="/libjs/polyfill.min.js"></script>
+    <script type="text/javascript" src="/libjs/react-jsonschema-form.min.js"></script>
+
+    <script type="text/javascript" src="js/main.js"></script>
+    <script type="text/javascript" src="js/utils.js"></script>
+    <script type="text/javascript" src="js/requests.js"></script>
+    <script type="text/javascript" src="js/visibiltyChanged.js"></script>
+    <!--script type="text/javascript" src="js/cells.js"></script-->
+    <script type="text/javascript" src="js/layout.js"></script>
+    <script type="text/javascript" src="js/websocket.js"></script>
+    <script type="text/javascript" src="js/modalList.js"></script>
+    <script type="text/javascript" src="js/modalForm.js"></script>
+    <script type="text/javascript" src="js/modalProgress.js"></script>
+    <script type="text/javascript" src="js/menu.js"></script>
+    <script type="text/javascript" src="js/navbar.js"></script>
+    <script type="text/javascript" src="js/progressBar.js"></script>
+    <script type="text/javascript" src="js/sidebar.js"></script>
+    <script type="text/javascript" src="js/view-type/form.js"></script>
+    <script type="text/javascript" src="js/view-type/graph.js"></script>
+    <script type="text/javascript" src="js/view-type/list.js"></script>
+    <script type="text/javascript" src="js/view-type/kanban.js"></script>
+</head>
+<body>
+
+<div id='menuContainer'>
+    <div id='jqxMenu'></div>
+</div>
+
+<nav class="navbar navbar-default">
+    <div>
+        <div id="breadcrumbContainer" class="block">
+        </div>
+        <!--div class="progressText block default_hide" id="progressText">
+            <span id="progressTextSpan" style="font-weight: bold;">progression : </span>
+        </div-->
+        <div class="collapse navbar-collapse block" id="searchDiv" style="float: right">
+            <form id="formSearch" class="navbar-form navbar-left">
+                <div id="toggle-div" class="block toggle-div" data-toggle="tooltip"
+                     title="display old versions">
+                    <span class="toggle-text">Old Versions</span>
+                    <label class="switch toggle-btn">
+                        <input id="toggle-checkbox" type="checkbox" autocomplete="off">
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+                <select id="objectIndexSelect" class="form-control index_list" data-toggle="tooltip"
+                        title="search index"></select>
+                <div class="form-group">
+                    <input id="filterInput" type="text" class="form-control searchbar" placeholder="Search"
+                           data-toggle="tooltip" title="search filter">
+                </div>
+                <button class="btn btn-default" id='searchbtn' onClick="searchButton()" data-toggle="tooltip"
+                        title="search for objects"><i class="fas fa-search"></i></button>
+            </form>
+        </div>
+    </div>
+
+    <div>
+        <div class="block left_btn default_hide" id="create_edit">
+            <button id="CreateBTN" type="button" class="btn btn-success" onclick="CreateBtn()">Create</button>
+            <button id="EditBTN" type="button" class="btn btn-primary" onclick="EditBtn()">Edit</button>
+        </div>
+        <div class="block left_btn default_hide" id="save_cancel">
+            <button id="SaveBTN" type="submit" class="btn btn-success" onclick="SaveBtn()">Save</button>
+            <button id="CancelBTN" type="button" class="btn btn-primary" onclick="CancelBtn()">Cancel</button>
+        </div>
+
+        <div class="block btn-archive default_hide dropdown" id="actions" data-toggle="tooltip" title="perform action">
+            <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="true">
+                Action
+                <span class="caret"></span>
+            </button>
+            <ul id="dropdownUL" class="dropdown-menu" aria-labelledby="dropdownMenu1"></ul>
+        </div>
+
+        <div class="block btn-export default_hide dropdown" id="export" data-toggle="tooltip" title="export content">
+            <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="true">
+                Export to
+                <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                <li><a onclick="excelExport()">Excel</a></li>
+                <li><a onclick="CSVExport()">CSV</a></li>
+                <li><a onclick="HTMLExport()">HTML</a></li>
+                <li><a onclick="PDFExport()">PDF</a></li>
+                <li><a onclick="JSONExport()">JSON</a></li>
+            </ul>
+        </div>
+
+        <div class="block btn-print default_hide dropdown" id="print">
+            <button onclick="printBtn()" class="btn btn-default" type="button" data-toggle="tooltip" title="print"><i
+                    class="fas fa-print"></i></button>
+        </div>
+
+        <!--div class="progressBar block default_hide" id="jqxWidget">
+            <div id='jqxProgressBar'></div>
+        </div-->
+        <div class="view-btn block">
+            <div id="list_navigation" class="block default_hide">
+                <div id='navdata' class="block">
+                    <input id="navIndex" class="block listIndex" type="text" data-toggle="tooltip"
+                           title="display page range/element"/>
+                    <span id="navMax"></span>
+                </div>
+                <div class="block pagin">
+                    <button class="btn btn-default" onclick="PrevPage()" data-toggle="tooltip"
+                            title="previous page/element"><i class="fas fa-chevron-left fa-lg"></i></button>
+                    <button class="btn btn-default" onclick="NextPage()" data-toggle="tooltip"
+                            title="next page/element"><i class="fas fa-chevron-right fa-lg"></i></button>
+                </div>
+            </div>
+            <div id="btnBlock" class="btn-group block default_hide">
+                <button class="btn btn-default button-types" id="view-list" onClick="init_list()" data-toggle="tooltip"
+                        title="list view"><i class="fas fa-list fa-lg"></i></button>
+                <button class="btn btn-default button-types" id="view-form" onClick="init_form()" data-toggle="tooltip"
+                        title="form view"><i class="fas fa-th fa-lg"></i></button>
+                <button class="btn btn-default button-types" id="view-graph" onClick="init_graph()"
+                        data-toggle="tooltip" title="relation view"><i class="fas fa-sitemap fa-lg"></i></button>
+                <!--button class="btn btn-default button-types" id="vue-block" onClick="init_kanban()"><i class="fas fa-th-large fa-lg" ></i></button-->
+            </div>
+        </div>
+    </div>
+</nav>
+
+
+<div id="layoutContainer" class="layoutContainer">
+    <div id="jqxDockingLayout">
+        <div data-container="mainWindow">
+            <div id="main-div" class="main-div">
+                <div id="dataTable">
+                </div>
+            </div>
+        </div>
+        <div data-container="sidenav1">
+            <div id="attributes" class="sidebar_default">
+            </div>
+        </div>
+        <div data-container="sidenav2">
+            <div id="objectHistory" class="sidebar_default"></div>
+        </div>
+    </div>
+</div>
+
+<div id="jqxLoader">
+</body>
+</html>

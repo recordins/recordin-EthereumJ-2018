@@ -1,0 +1,38 @@
+.sidebar_default {
+}
+
+.rowText {
+    margin: 0px !important;
+}
+
+.SideTable {
+    margin-bottom: 5px;
+}
+
+.checkboxAttrSystem {
+    margin-top: 3px !important;
+    margin-left: 10px !important;
+    margin-right: 10px !important;
+}
+
+.checkAttrSystem {
+    display: table;
+    margin-bottom: 5px;
+    margin-top: 5px;
+}
+
+.checkText {
+    display: table-cell;
+    vertical-align: middle;
+}
+
+hr {
+    display: block;
+    margin-top: 0;
+    margin-bottom: 0;
+    margin-left: auto;
+    margin-right: auto;
+    border-style: inset;
+    border: 0;
+    border-top: 3px solid #000000;
+}

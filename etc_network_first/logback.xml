@@ -1,0 +1,171 @@
+<configuration scan="true" scanPeriod="30 seconds">
+
+
+    <!-- standard appender for console-->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+
+        <withJansi>true</withJansi>
+        <filter class="ch.qos.logback.core.filter.EvaluatorFilter">
+            <evaluator>
+                <expression>return logger.contains("AccessLog") || logger.contains("oshi") ||
+                    logger.contains("org.springframework.context");
+                </expression>
+            </evaluator>
+            <OnMismatch>NEUTRAL</OnMismatch>
+            <OnMatch>DENY</OnMatch>
+        </filter>
+
+        <filter class="ch.qos.logback.core.filter.EvaluatorFilter">
+            <evaluator>
+                <expression>return logger.contains("com.recordins") || logger.contains("org.cheetah.webserver") ||
+                    logger.contains("ERROR");
+                </expression>
+            </evaluator>
+            <OnMismatch>DENY</OnMismatch>
+            <OnMatch>NEUTRAL</OnMatch>
+        </filter>
+
+        <encoder>
+            <pattern>%-30(%d{HH:mm:ss.SSS} [%thread]) %highlight(%-5level) %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="FILE_CHEETAH" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <filter class="ch.qos.logback.core.filter.EvaluatorFilter">
+            <evaluator>
+                <expression>return logger.contains("AccessLog") || logger.contains("oshi");</expression>
+            </evaluator>
+            <OnMismatch>NEUTRAL</OnMismatch>
+            <OnMatch>DENY</OnMatch>
+        </filter>
+        <filter class="ch.qos.logback.core.filter.EvaluatorFilter">
+            <evaluator>
+                <expression>return logger.contains("org.cheetah.webserver");</expression>
+            </evaluator>
+            <OnMismatch>DENY</OnMismatch>
+            <OnMatch>NEUTRAL</OnMatch>
+        </filter>
+
+        <file>log/cheetah.log</file>
+
+        <encoder>
+            <pattern>%-30(%d{HH:mm:ss.SSS} [%thread]) %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+
+
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>log/cheetah-%d{yyyy-MM-dd}.log.zip</fileNamePattern>
+            <maxHistory>15</maxHistory>
+        </rollingPolicy>
+
+    </appender>
+
+    <appender name="FILE_ACCESS" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>log/access.log</file>
+
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} - %msg%n</pattern>
+        </encoder>
+
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>log/access-%d{yyyy-MM-dd}.log.zip</fileNamePattern>
+            <maxHistory>15</maxHistory>
+        </rollingPolicy>
+    </appender>
+
+    <appender name="FILE_ETHEREUM" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <filter class="ch.qos.logback.core.filter.EvaluatorFilter">
+            <evaluator>
+                <expression>return logger.contains("org.cheetah.webserver") || logger.contains("oshi");</expression>
+            </evaluator>
+            <OnMismatch>NEUTRAL</OnMismatch>
+            <OnMatch>DENY</OnMatch>
+        </filter>
+
+        <filter class="ch.qos.logback.core.filter.EvaluatorFilter">
+            <evaluator>
+                <expression>return logger.contains("com.recordins.recordin");</expression>
+            </evaluator>
+            <OnMismatch>NEUTRAL</OnMismatch>
+            <OnMatch>DENY</OnMatch>
+        </filter>
+
+        <file>log/ethereum.log</file>
+
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+
+
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>log/ethereum-%d{yyyy-MM-dd}.log.zip</fileNamePattern>
+            <maxHistory>15</maxHistory>
+        </rollingPolicy>
+
+    </appender>
+
+    <appender name="FILE_RECORDIN" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <filter class="ch.qos.logback.core.filter.EvaluatorFilter">
+            <evaluator>
+                <expression>return logger.contains("com.recordins.recordin");</expression>
+            </evaluator>
+            <OnMismatch>DENY</OnMismatch>
+            <OnMatch>NEUTRAL</OnMatch>
+        </filter>
+
+        <file>log/recordin.log</file>
+
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+
+
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>log/recordin-%d{yyyy-MM-dd}.log.zip</fileNamePattern>
+            <maxHistory>15</maxHistory>
+        </rollingPolicy>
+
+    </appender>
+
+    <logger name="org.cheetah.webserver.AccessLog" level="trace">
+        <appender-ref ref="FILE_ACCESS"/>
+    </logger>
+
+    <logger name="org.springframework" level="ERROR">
+        <!--appender-ref ref="STDOUT"/-->
+    </logger>
+
+    <!--root level="info"-->
+    <root level="debug">
+        <appender-ref ref="STDOUT"/>
+        <appender-ref ref="FILE_ETHEREUM"/>
+        <appender-ref ref="FILE_CHEETAH"/>
+        <appender-ref ref="FILE_RECORDIN"/>
+    </root>
+
+
+    <logger name="state" level="WARN"/>
+    <logger name="trie" level="ERROR"/>
+    <!--logger name="net" level="DEBUG"/-->
+    <logger name="net" level="WARN"/>
+    <logger name="execute" level="WARN"/>
+    <logger name="VM" level="ERROR"/>
+    <logger name="pending" level="WARN"/>
+    <!--logger name="sync" level="TRACE"/-->
+    <logger name="sync" level="DEBUG"/>
+    <logger name="wire" level="ERROR"/>
+    <logger name="db" level="DEBUG"/>
+    <!--logger name="general" level="DEBUG"/-->
+    <logger name="general" level="INFO"/>
+    <logger name="TCK-Test" level="ERROR"/>
+    <logger name="org.hibernate" level="ERROR"/>
+    <logger name="repository" level="INFO"/>
+    <logger name="blockchain" level="INFO"/>
+    <logger name="mine" level="WARN"/>
+    <logger name="blockqueue" level="DEBUG"/>
+    <logger name="rlp" level="ERROR"/>
+    <logger name="java.nio" level="ERROR"/>
+    <logger name="io.netty" level="ERROR"/>
+    <logger name="discover" level="DEBUG"/>
+    <logger name="hsqldb.db" level="ERROR"/>
+</configuration>

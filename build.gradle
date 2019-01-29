@@ -1,0 +1,306 @@
+import java.text.SimpleDateFormat
+
+plugins {
+    id 'java'
+}
+
+apply plugin: 'java'
+
+group 'recordins'
+version '19.01'
+version = version + ("master" == gitCurBranch() ? "-RELEASE" : "-SNAPSHOT")
+
+def gitCurBranch() {
+    def process = "git rev-parse --abbrev-ref HEAD".execute()
+    return process.text.trim()
+}
+
+def date = buildTime();
+
+def buildTime() {
+    def df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ") // you can change it
+    df.setTimeZone(TimeZone.getTimeZone("UTC"))
+    return df.format(new Date())
+}
+
+// not suported in IntelliJ
+//sourceCompatibility = 1.8
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+
+if (!hasProperty('mainClass')) {
+    ext.mainClass = 'com.recordins.recordin.Main'
+}
+
+// need higher version than ide default to support java 11
+// this is for legacy gradle < 5.0
+task wrapper(type: Wrapper) {
+    gradleVersion = "4.9"
+}
+
+// this is for gradle >= 5.0
+wrapper {
+    gradleVersion = "4.9"
+}
+
+wrapper.gradleVersion = '4.9'
+
+repositories {
+    mavenCentral()
+
+    maven {
+        url "http://dl.bintray.com/ethereum/maven"
+    }
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+
+    /* used to retrive dependnecies online*/
+
+    /*
+    compile "org.ethereum:ethereumj-core:1.7.1-RELEASE"
+    compile "com.fasterxml.jackson.core:jackson-databind:2.9.4"
+     */
+
+
+    /* use only dependencies found inside the lib folder*/
+    compile fileTree(dir: 'lib', include: '*.jar')
+    runtime fileTree(dir: 'lib', include: '*.jar')
+}
+
+/*
+ *
+ * Used to retrive all dependencies and put them into lib/folder
+ *
+project.configurations.compile.resolvedConfiguration.resolvedArtifacts.each {
+println it.name // << the artifact name
+println it.file // << the file reference
+
+def libfile = it.file;
+copy{
+from "$libfile"
+into "lib"
+}
+}
+ */
+
+task packageTests(type: Jar) {
+    baseName = rootProject.name + 'Test'
+    manifest {
+        attributes(
+                "Created-By": 'Recordins SAS - Philippe Schweitzer - 2018',
+                "Class-Path": 'lib/' + configurations.compile.collect { it.getName() }.join(' lib/'),
+                "Main-Class": 'com.recordins.recordin.Main',
+                "Recordin-Version": version,
+                "Build-Time-ISO-8601": date
+        )
+    }
+    from sourceSets.test.output
+}
+
+jar {
+    baseName = rootProject.name
+    manifest {
+        attributes(
+                "Created-By": 'Recordins SAS - Philippe Schweitzer - 2018',
+                "Class-Path": 'lib/' + configurations.compile.collect { it.getName() }.join(' lib/'),
+                "Main-Class": 'com.recordins.recordin.Main',
+                "Recordin-Version": version,
+                "Build-Time-ISO-8601": date
+        )
+    }
+}
+
+clean {
+    doFirst {
+        def jarname = rootProject.name + "-" + version + ".jar"
+        def file = new File(jarname)
+
+        if(file.exists()){
+            delete jarname
+        }
+
+        /*
+        jarname = rootProject.name + 'Test' + "-" + version + ".jar"
+        file = new File(jarname)
+
+        if(file.exists()){
+            delete jarname
+        }
+        */
+    }
+}
+
+//noinspection GroovyAssignabilityCheck
+build {
+    //dependsOn packageTests
+
+    doLast {
+        def jarname = rootProject.name + "-" + version + ".jar"
+        def file = new File(jarname)
+
+        if(file.exists()){
+            delete jarname
+        }
+
+        copy{
+            from "$buildDir/libs/" + jarname
+            into "$projectDir/"
+        }
+
+        /*
+        jarname = rootProject.name + 'Test' + "-" + version + ".jar"
+        file = new File(jarname)
+
+        if(file.exists()){
+            delete jarname
+        }
+        copy {
+            from "$buildDir/libs/" + jarname
+            into "$projectDir/"
+        }
+        */
+    }
+}
+
+compileJava.finalizedBy jar
+
+task reset_database_standalone {
+
+    doLast {
+        def blockchain_folder = "$projectDir/database-recordin-standalone-standard"
+        def blockchain_file_folder = new File(blockchain_folder)
+
+        if(blockchain_file_folder.exists()){
+            delete blockchain_folder
+        }
+        
+        delete "$projectDir/etc/user.properties"
+        delete "$projectDir/etc/keys.properties"
+
+        def etc_folder = "$projectDir/etc"
+        def etc_file_folder = new File(etc_folder)
+        if(etc_file_folder.exists()){
+            delete etc_folder
+        }
+    }
+}
+
+task reset_database_network {
+
+    doLast {
+
+        def blockchain_folder = "$projectDir/database-recordin-private-network-standard"
+        def blockchain_file_folder = new File(blockchain_folder)
+
+        if(blockchain_file_folder.exists()){
+            delete blockchain_folder
+        }
+        
+        delete "$projectDir/etc/user.properties"
+        delete "$projectDir/etc/keys.properties"
+
+        def etc_folder = "$projectDir/etc"
+        def etc_file_folder = new File(etc_folder)
+        if(etc_file_folder.exists()){
+            delete etc_folder
+        }
+    }
+}
+
+task switch_standalone_config {
+
+    def etc_folder = "$projectDir/etc"
+    def etc_file_folder = new File(etc_folder)
+
+    doFirst {
+
+        if(etc_file_folder.exists()){
+            def props = new Properties()
+            file("etc/recordin.properties").withInputStream { props.load(it) }
+
+            if(!props.getProperty("NodeStandalone").equals("true")){
+                delete etc_folder
+            }
+        }
+    }
+
+    doLast {
+        if(! etc_file_folder.exists()) {
+            copy {
+                from "$projectDir/etc_standalone"
+                into "$projectDir/etc"
+            }
+        }
+    }
+}
+
+task switch_network_config {
+
+    def etc_folder = "$projectDir/etc"
+    def etc_file_folder = new File(etc_folder)
+
+    doFirst {
+
+        if(etc_file_folder.exists()){
+            def props = new Properties()
+            file("etc/recordin.properties").withInputStream { props.load(it) }
+
+            if(props.getProperty("NodeStandalone").equals("true")){
+                print "delete1\n"
+                delete etc_folder
+            }
+            else{
+
+                if(!props.getProperty("PeerActive").equals("[]")){
+                    delete etc_folder
+                }
+            }
+        }
+
+        print "2 etc_file_folder.exists(): " + etc_file_folder.exists() + "\n"
+    }
+
+    doLast {
+
+        if(!etc_file_folder.exists()) {
+            copy {
+                from "$projectDir/etc_network_first"
+                into "$projectDir/etc"
+            }
+        }
+    }
+}
+
+task switch_network_node_config {
+
+    def etc_folder = "$projectDir/etc"
+    def etc_file_folder = new File(etc_folder)
+
+    doFirst {
+
+        if(etc_file_folder.exists()){
+            def props = new Properties()
+            file("etc/recordin.properties").withInputStream { props.load(it) }
+
+            if(props.getProperty("NodeStandalone").equals("true")){
+                delete etc_folder
+            }
+            else{
+                if(props.getProperty("PeerActive").equals("[]")){
+                    delete etc_folder
+                }
+            }
+        }
+    }
+
+    doLast {
+
+        if(! etc_file_folder.exists()) {
+            copy {
+                from "$projectDir/etc_network_node"
+                into "$projectDir/etc"
+            }
+        }
+    }
+}

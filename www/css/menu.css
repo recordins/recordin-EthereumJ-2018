@@ -1,0 +1,23 @@
+
+.jqx-menu ul {
+    padding-top: 5px !important;
+}
+
+#Settings {
+    float: right !important;
+}
+
+.jqx-menu-item-top-right-align {
+    float: right !important;
+    /*margin-right: 5px;*/
+
+}
+
+.jqx-menu-item-top-left-align {
+    float: left !important;
+}
+
+.jqx-menu-dropdown {
+    width: 120px !important;
+
+}

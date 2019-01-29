@@ -1,0 +1,42 @@
+[
+  {
+    "Name": "Box",
+    "Description": "Module Box",
+    "Java Class": "BlockchainObject",
+    "Transient": false,
+    "Immutable": false,
+    "Display Name Separator": " ",
+    "Default Form UI": "",
+    "ACL": [],
+    "Attribute List": [
+      {
+        "Name": "Name",
+        "AttrType": "AttrString",
+        "AttrTypeModel": "",
+        "OnChange": "",
+        "DefaultValue": "",
+        "ContextData": "",
+        "Required": true,
+        "Unique": true,
+        "Visible": true,
+        "DisplayName": true,
+        "Indexed": true,
+        "ACL": []
+      },
+      {
+        "Name": "Reseller",
+        "AttrType": "AttrID",
+        "AttrTypeModel": "User",
+        "OnChange": "",
+        "DefaultValue": "",
+        "ContextData": "{'oldVersion':true,'filter':'user'}",
+        "Required": false,
+        "Unique": false,
+        "Visible": true,
+        "DisplayName": false,
+        "Indexed": false,
+        "ACL": []
+      }
+    ]
+  }
+]

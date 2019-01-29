@@ -1,0 +1,280 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+}
+
+.index_list {
+    width: 100px !important;
+}
+
+.jqx-loader {
+    background-color: #efefef !important;
+}
+
+.jqx-loader-modal {
+    z-index: 998 !important;
+}
+
+.orgchart {
+    position: relative;
+    right: 0;
+    left: 0;
+    margin-right: auto;
+    margin-left: auto;
+    width: 100%;
+    height: 100%;
+    background-image: none;
+}
+
+.div_orgchart {
+    height: 100%;
+    width: 100%;
+}
+
+.div_orgchart > chart-div {
+    width: 100%;
+    height: 1000%;
+}
+
+.form {
+    margin-right: 200px;
+    margin-left: 200px;
+    margin-top: 50px;
+}
+
+.main-window {
+    height: 100%;
+    float: left;
+    width: 80%;
+    overflow: hidden;
+    position: fixed;
+}
+
+.main-div {
+    height: 99.9%;
+    width: 100%;
+}
+
+.layoutContainer {
+    height: calc(99% - 133px);
+    width: 100%;
+}
+
+.checkAllBox, .checkAllBoxModal {
+    text-align: left;
+    /* float: left; */
+    padding: 0px;
+    border: 1px solid transparent;
+    outline: none;
+    margin: 0px 3px 0px 3px;
+    float: none !important;
+    width: 16px;
+    height: 17px;
+    cursor: pointer;
+
+    position: absolute;
+    right: 37.5%;
+    bottom: 25%;
+    cursor: pointer;
+
+}
+
+.checkOldBox {
+    text-align: left;
+    /* float: left; */
+    padding: 0px;
+    border: 1px solid transparent;
+    outline: none;
+    margin: 0px 3px 0px 3px;
+    float: none !important;
+    width: 16px;
+    height: 17px;
+    cursor: pointer;
+
+    position: relative;
+    top: 5px;
+    /*right: 37.5%;
+    bottom: 25%;
+    */
+    cursor: pointer;
+
+}
+
+.notifyjs-corner {
+    margin-top: -1px !important;
+    margin-right: 70px !important;
+}
+
+.notifyjs-errorHTML-base h1 {
+    font-size: 22px !important;
+    font-weight: bold;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+    margin-top: 0px;
+    margin-bottom: 3px;
+    word-wrap: break-word;
+}
+
+.notifyjs-errorHTML-base h2 {
+    font-size: 14px !important;
+    font-weight: bold;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+    margin-top: 0px;
+    margin-bottom: 3px;
+    word-wrap: break-word;
+}
+
+.notifyjs-errorHTML-base p {
+    font-size: 14px !important;
+    font-weight: bold;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+    margin-top: 0px;
+    margin-bottom: 3px;
+}
+
+.notifyjs-errorHTML-base .page-class {
+    width: auto;
+    max-width: 820px;
+    margin: 0%;
+    min-height: 10px;
+    display: inline-block;
+    white-space: nowrap;
+}
+
+/*
+div[class="row"] {
+    outline: 1px dotted rgba(0, 0, 0, 0.25);
+}
+*/
+
+.array-item {
+
+}
+
+.array-item-list {
+    background-color: rgb(246, 246, 246);
+}
+
+/*
+div[class^="col-"] {
+    background-color: rgba(255, 0, 0, 0.2);
+    outline: 1px dotted rgba(0, 0, 0, 0.5);
+}
+*/
+
+.field-boolean {
+    margin-bottom: 40px;
+}
+
+.control-label {
+    /*display: inline-block;*/
+}
+
+.input-fixed {
+    background-color: transparent;
+    pointer-events: none;
+    border: 0px;
+    margin: 8px;
+    /*display: inline-block;*/
+}
+
+/* remove arrow from select */
+select[class="input-fixed"] {
+    /* for Firefox */
+    -moz-appearance: none;
+    /* for Chrome */
+    -webkit-appearance: none;
+}
+
+/* For IE10 */
+select::-ms-expand {
+    display: none;
+}
+
+input[type=checkbox], button {
+    margin-top: -2px;
+}
+
+.checkbox {
+    margin-top: 0px;
+}
+
+.checkbox span {
+    font-weight: bold;
+    font-weight: bold;
+}
+
+.orgchart .node .content {
+    border-color: #256bdb;
+}
+
+.orgchart .node .title {
+    background-color: #256bdb;
+}
+
+.orgchart .lines .rightLine {
+    border-right: gray;
+    border-right-style: solid;
+    border-right-width: 1px;
+}
+
+.orgchart .lines .leftLine {
+    border-left: gray;
+    border-left-style: solid;
+    border-left-width: 1px;
+}
+
+.orgchart .lines .topLine {
+    border-top: gray;
+    border-top-style: solid;
+    border-top-width: 2px;
+}
+
+.orgchart .lines .downLine {
+    background-color: gray;
+    border-bottom-style: solid;
+    border-bottom-width: 2px;
+}
+
+.orgchart .node:hover {
+    background-color: #003fa5;
+}
+
+.jqx-widget-content {
+}
+
+.jqx-widget-content jqx-ribbon-content-section jqx-ribbon-content-section-bottom {
+    overflow-x: hidden !important;
+}
+
+.sideTable {
+    overflow: hidden !important;
+}
+
+.jqx-ribbon-content-section {
+    overflow: hidden !important;
+}
+
+.table-history-tables {
+}
+
+.history-operation {
+    font-weight: normal;
+    font-size: 12px;
+    color: #222222;
+}
+
+.table-history {
+    width: 100%;
+    max-width: 100%;
+    margin-bottom: 20px;
+}
+
+.table-history > thead > tr > th, .table-history > tbody > tr > th, .table-history > tfoot > tr > th, .table-history > thead > tr > td, .table-history > tbody > tr > td, .table-history > tfoot > tr > td {
+    padding: 8px;
+    line-height: 1.42857143;
+    vertical-align: top;
+    border-top: 1px solid #ddd;
+}

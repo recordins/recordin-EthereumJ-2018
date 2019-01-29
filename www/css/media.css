@@ -1,0 +1,35 @@
+@media only screen and (max-height: 792px) {
+    .layoutContainer {
+        height: calc(98.5% - 133px);
+        width: 100%;
+    }
+
+    .main-div {
+        height: 99.5%;
+        width: 100%;
+    }
+}
+
+@media only screen and (max-height: 540px) {
+    .layoutContainer {
+        height: calc(98% - 133px);
+        width: 100%;
+    }
+
+    .main-div {
+        height: 99.5%;
+        width: 100%;
+    }
+}
+
+@media only screen and (max-height: 390px) {
+    .layoutContainer {
+        height: calc(97.5% - 133px);
+        width: 100%;
+    }
+
+    .main-div {
+        height: 99%;
+        width: 100%;
+    }
+}
