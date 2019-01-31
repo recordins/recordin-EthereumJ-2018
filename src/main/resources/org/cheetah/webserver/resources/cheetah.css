@@ -1,0 +1,157 @@
+/*
+ * Record'in
+ *
+ * Copyright (C) 2019 Blockchain Record'in Solutions
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+table {
+    table-layout: fixed;
+    width: 100%;
+    margin: auto;
+}
+
+.table .table {
+    background-color: #fff;
+    table-layout: fixed;
+    width: 100%;
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.table-striped th {
+    border-bottom: 1px solid #293133;
+    padding-bottom: 3px;
+}
+
+.table-striped td {
+    height: 30px;
+}
+
+hr {
+    color: #293133;
+    display: block;
+    border-style: inset;
+    border-width: 1px;
+}
+
+body {
+    background-image: url("/login/back1.jpg");
+    background-size: 100% auto;
+    background-repeat: no-repeat;
+    background-origin: content-box;
+    /*background-position: center center;*/
+    /* background-color: rgba(73, 210, 255, 0.15);*/
+    font-family: Arial, Helvetica, sans-serif;
+    color: #293133;
+    font-size: 13px;
+}
+
+.page-class {
+    /*background-color: #ffffff;*/
+    background-color: rgba(255, 255, 255, 0.95);
+    border-radius: 20px;
+    margin: auto;
+    margin-top: 40px;
+    width: 50%;
+    min-height: 500px;
+    border: 2px solid;
+    border-color: #293133;
+    padding: 10px;
+    word-wrap: break-word;
+}
+
+th {
+    font-size: 16px;
+}
+
+h1 {
+    font-size: 30px;
+}
+
+h2 {
+    font-size: 25px;
+}
+
+h3, thead {
+    font-size: 20px;
+}
+
+p {
+    font-size: 16px;
+}
+
+a {
+    font-size: 13px;
+}
+
+a img {
+    position: relative;
+    top: 5px;
+    margin-right: 10px;
+}
+
+a:link {
+    color: #e20062;
+    text-decoration: none;
+    display: inline-block;
+    padding-bottom: 8px;
+    margin-top: -6px;
+}
+
+/* visited link */
+a:visited {
+    color: #e20062;
+    text-decoration: none;
+    display: inline-block;
+}
+
+/* mouse over link */
+a:hover {
+    color: #e20062;
+    text-decoration: underline;
+    display: inline-block;
+}
+
+/* selected link */
+a:active {
+    color: #e20062;
+    text-decoration: none;
+    display: inline-block;
+}
+
+input[type=submit], button {
+    padding: 5px 15px;
+    background: #d2d2d2;
+    border: 1px solid #d2d2d2;
+    cursor: pointer;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    color: #000000;
+}
+
+input[type=submit]:hover, button:hover {
+    padding: 5px 15px;
+    background: #d2d2d2;
+    border: 1px solid #e20062;
+    cursor: pointer;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    color: #000000;
+}
+
+

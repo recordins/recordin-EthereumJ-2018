@@ -54,6 +54,8 @@ import java.time.ZoneOffset;
 import org.cheetah.webserver.WebServerContext;
 import org.cheetah.webserver.authentication.BlockchainAuthenticatorFactory;
 import org.cheetah.webserver.authentication.IBlockchainAuthenticator;
+import org.cheetah.webserver.page.admin.Login;
+import org.cheetah.webserver.resources.PageDefaultRecordin;
 import org.ethereum.config.SystemProperties;
 import org.ethereum.facade.Ethereum;
 import org.ethereum.net.eth.message.StatusMessage;
@@ -280,6 +282,7 @@ public class Main {
         webserver.setStopStrategy(Controller.STOP_STRATEGY.KILL);
         webserver.printProperties();
         webserver.setPrintURLResolvingTraces(false);
+        webserver.setDefaultPageClass(PageDefaultRecordin.class);
 
         if (CheetahWebserver.getInstance() == null) {
             logger.error("Failed to start CheetahWebserver ! Aborting...");

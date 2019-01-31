@@ -1,0 +1,135 @@
+<!--
+  ~ Record'in
+  ~
+  ~ Copyright (C) 2019 Blockchain Record'in Solutions
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <title>Record'in - The Blockchain Recording Solution</title>
+    <link rel="icon" href="/Favicon" type="image/jpg">
+    <link rel="shortcut icon" href="/Favicon" type="image/jpg">
+    <link rel="stylesheet" type="text/css" href="/css/Cheetah">
+
+    <script type="text/javascript">
+
+        function goback() {
+            var referer = document.referrer;
+            if (referer === '') {
+                location.reload();
+            } else {
+                window.location = referer;
+            }
+
+        }
+
+        function login() {
+
+            username = document.forms["loginForm"].elements["username"].value;
+            password = document.forms["loginForm"].elements["password"].value;
+
+            var encodedString = btoa(username + ":" + password);
+
+            var xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === XMLHttpRequest.DONE) {
+                    var referer = document.referrer;
+                    if (referer === '' || xhr.status === 401) {
+                        location.reload();
+                    } else {
+                        if (!referer.includes("/admin/Logoff")) {
+                            window.location = referer;
+                        } else {
+                            location.reload();
+                        }
+                    }
+                }
+            };
+            xhr.open("GET", "/admin/Login", false);
+            xhr.setRequestHeader("Authorization", "Basic " + encodedString, false);
+            xhr.send();
+        }
+
+        function updateMessage() {
+
+            var div = document.getElementById("message");
+
+            div.innerHTML = "<pre style='color:red;font-size:1.6em;'>" + getCookie(document.cookie, "Message") + "</pre>";
+
+        }
+
+        function getCookie(cookies, cname) {
+
+            var name = cname + "=";
+            var ca = cookies.split(';');
+            for (var i = 0; i < ca.length; i++) {
+                var c = ca[i];
+
+                while (c.charAt(0) == ' ')
+                    c = c.substring(1);
+                if (c.indexOf(name) == 0)
+                    return c.substring(name.length, c.length);
+            }
+            return "";
+        }
+    </script>
+
+</head>
+<body onload="updateMessage()">
+<div id="page" class="page-class">
+    <table id="cheetahTable">
+        <tr>
+            <td width="50%">
+                <h1>&nbsp;&nbsp;&nbsp;Login page</h1>
+            </td>
+            <td width="50%" style="text-align: center;">
+                <a href="https://www.recordins.com" target="_blank"><img src="/login/Logo" width="100%"/></a>
+            </td>
+        </tr>
+    </table>
+    <hr>
+    <div align="center" style="min-height: 300px;">
+        <form name="loginForm" action="javascript:login();">
+            <BR>
+            <h3>Username:
+                <input type="text" name="username"/>
+            </h3>
+            <h3>
+                Password:
+                <input type="password" name="password"/>
+            </h3>
+            <div id="message">
+                <pre style="color:red;font-size:1.6em;"></pre>
+            </div>
+            <h3>
+                <input type="submit" value="Login" style="display: none"/>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <button onclick="goback()">Cancel</button>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <input type="submit" value="Login"/>
+            </h3>
+        </form>
+    </div>
+    <div align="right">
+        <a href="https://www.recordins.com" target="_blank">www.recordins.com</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    </div>
+</div>
+
+</body>
+</html>

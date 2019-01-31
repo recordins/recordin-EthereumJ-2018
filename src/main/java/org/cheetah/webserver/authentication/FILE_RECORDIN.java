@@ -50,13 +50,13 @@ public class FILE_RECORDIN extends FILE implements IBlockchainAuthenticator {
     private ConcurrentHashMap<String, String> loginProperties = new ConcurrentHashMap();
     private ConcurrentHashMap<String, String> keysProperties = new ConcurrentHashMap();
 
-    private byte[] secret;
+    //private byte[] secret;
 
     private String userFilename = "etc/user.properties";
     private String keysFilename = "etc/keys.properties";
 
-    int ivSize = 16;
-    int keySize = 16;
+    //int ivSize = 16;
+    //int keySize = 16;
 
     public FILE_RECORDIN() {
 
@@ -176,7 +176,7 @@ public class FILE_RECORDIN extends FILE implements IBlockchainAuthenticator {
         storeProperties();
     }
 
-    private byte[] encrypt(String password) {
+    public static byte[] encrypt(String password) {
         byte[] result = {};
         try {
             byte[] byteText = password.getBytes();
@@ -217,7 +217,7 @@ public class FILE_RECORDIN extends FILE implements IBlockchainAuthenticator {
 
     }
 
-    private byte[] decrypt(byte[] encrypted) {
+    public static byte[] decrypt(byte[] encrypted) {
         byte[] result = {};
 
         try {

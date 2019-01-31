@@ -68,27 +68,12 @@ dependencies {
     runtime fileTree(dir: 'lib', include: '*.jar')
 }
 
-/*
- *
- * Used to retrive all dependencies and put them into lib/folder
- *
-project.configurations.compile.resolvedConfiguration.resolvedArtifacts.each {
-println it.name // << the artifact name
-println it.file // << the file reference
-
-def libfile = it.file;
-copy{
-from "$libfile"
-into "lib"
-}
-}
- */
 
 task packageTests(type: Jar) {
     baseName = rootProject.name + 'Test'
     manifest {
         attributes(
-                "Created-By": 'Recordins SAS - Philippe Schweitzer - 2018',
+                "Created-By": 'Recordins SAS - Philippe Schweitzer - 2019',
                 "Class-Path": 'lib/' + configurations.compile.collect { it.getName() }.join(' lib/'),
                 "Main-Class": 'com.recordins.recordin.Main',
                 "Recordin-Version": version,
@@ -98,16 +83,95 @@ task packageTests(type: Jar) {
     from sourceSets.test.output
 }
 
+
+task customFatJar(type: Jar) {
+    doFirst {
+        libFolder()
+    }
+    manifest {
+        attributes(
+                "Created-By": 'Recordins SAS - Philippe Schweitzer - 2019',
+                "Class-Path": 'lib/' + configurations.compile.collect { it.getName() }.join(' lib/'),
+                "Main-Class": 'com.recordins.recordin.Main',
+                "Cheetah-Version": version,
+                "Build-Time-ISO-8601": date
+        )
+    }
+    baseName = rootProject.name + '-all-in-one-jar'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    exclude 'META-INF/*.RSA', 'META-INF/*.SF','META-INF/*.DSA'
+    with jar
+}
+
+task recordinweb(type: Zip) {
+
+    def release_folder = new File("$buildDir/Recordin" + version)
+
+    if (release_folder.exists()) {
+        delete release_folder
+    }
+    
+    from "$projectDir/www"
+    include '**/*'
+    archiveName "Recordin-Web-" + version + ".zip"
+    destinationDir(file("$buildDir/Recordin-" + version + "/plugins/"))
+    
+}
+
+task release {
+
+    dependsOn customFatJar, recordinweb
+
+    doFirst {
+
+        copy {
+            from "$projectDir/etc_standalone"
+            into "$buildDir/Recordin-" + version + "/etc"
+        }
+
+        copy {
+            from "$buildDir/libs/" + rootProject.name + '-all-in-one-jar-' + version + ".jar"
+            into "$buildDir/Recordin-" + version
+        }
+        
+        copy {
+            from "$projectDir/plugins"
+            into "$buildDir/Recordin-" + version + "/plugins"
+        }        
+    }
+}
+
 jar {
+    //dependsOn customFatJar
+    //doFirst {
+    //    libFolder()
+    //}
     baseName = rootProject.name
     manifest {
         attributes(
-                "Created-By": 'Recordins SAS - Philippe Schweitzer - 2018',
+                "Created-By": 'Recordins SAS - Philippe Schweitzer - 2019',
                 "Class-Path": 'lib/' + configurations.compile.collect { it.getName() }.join(' lib/'),
                 "Main-Class": 'com.recordins.recordin.Main',
                 "Recordin-Version": version,
                 "Build-Time-ISO-8601": date
         )
+    }
+}
+
+/*
+ *
+ * Used to retrieve all dependencies and put them into lib/folder
+ */
+def libFolder() {
+    project.configurations.compile.resolvedConfiguration.resolvedArtifacts.each {
+        //println it.name // << the artifact name
+        //println it.file // << the file reference
+
+        def libfile = it.file;
+        copy {
+            from "$libfile"
+            into "lib"
+        }
     }
 }
 
