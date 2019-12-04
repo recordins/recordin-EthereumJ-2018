@@ -197,6 +197,30 @@ public class BlockchainObjectWriter {
         return write(object, true);
     }
 
+    public String writeAsync(BlockchainObject object) throws ORMException {
+        write(object, true);
+
+
+        try {
+            synchronized (object) {
+                object.wait();
+            }
+        } catch (InterruptedException ex) {
+        }
+
+        for (PendingTransactionInformation pendingTransactionInformation : Main.pendingTransaction.values()) {
+            if (pendingTransactionInformation.uid.equals(object.getUid())) {
+
+                if (pendingTransactionInformation.exception != null) {
+                    throw pendingTransactionInformation.exception;
+                }
+                return Hex.toHexString(pendingTransactionInformation.transaction.getHash());
+            }
+        }
+
+        return "";
+    }
+
     public AttrID write(BlockchainObject object, boolean asynchronous) throws ORMException {
         logger.trace("START write(BlockchainObject, Boolean)");
         String jsonString = "";
@@ -206,7 +230,7 @@ public class BlockchainObjectWriter {
             throw new ORMException("Blockchain node is Read Only");
         }
 
-        //Set a new UID if it is a new obeject
+        //Set a new UID if it is a new object
         if (object.isEmptyParentList()) {
             newUid = UUID.randomUUID().toString();
 
@@ -464,6 +488,15 @@ public class BlockchainObjectWriter {
                         jsonResult.put("MessageType", "Error");
                         jsonResult.put("MessageValue", "Error during object writing: " + ex.toString());
 
+                        if (ex.transaction != null) {
+
+                            String transactionID = Hex.toHexString(ex.transaction.getHash());
+                            if (Main.pendingTransaction.containsKey(transactionID)) {
+                                logger.trace("Transaction REMOVE: " + transactionID);
+                                Main.pendingTransaction.remove(transactionID);
+                            }
+                        }
+
                         sendWebsocket(jsonResult.toJSONString(), user);
                         logger.error("Error during asynchronous object writing: " + ex.toString());
                     }
@@ -489,7 +522,7 @@ public class BlockchainObjectWriter {
         return BigInteger.valueOf(0);
     }
 
-    private Map.Entry<Transaction, Future<Transaction>> createAndSubmitTransaction(JSONArray jsonArray) throws ORMException {
+    private Map.Entry<Transaction, String> createTransaction(JSONArray jsonArray) throws ORMException {
         logger.trace("START createAndSubmitTransaction(String)");
 
         Transaction transaction = null;
@@ -505,7 +538,7 @@ public class BlockchainObjectWriter {
         String model = (String) ((JSONObject) jsonArray.get(1)).get("model");
         String displayName = (String) ((JSONObject) jsonArray.get(1)).get("displayName");
 
-        if (ethereum.getBlockchain().getBestBlock().getNumber() < 1 || (model != null && model.equals("Preferences"))) {
+        if (ethereum.getBlockchain().getBestBlock().getNumber() < 1 || (model != null && model.equals("Preferences")) || (!CheetahWebserver.getInstance().isSessionAuthenticationEnabled())) {
             sender = ECKey.fromPrivate(Hex.decode("1c3eaa38a0983eeba090b63b06162ec9dca6a6d3cae448a78ab02ad085351ee5"));
             senderAddr = sender.getAddress();
             senderKey = sender.getPrivKeyBytes();
@@ -514,6 +547,7 @@ public class BlockchainObjectWriter {
         String addressString = Hex.toHexString(senderAddr);
         long lockCookie = writerLockNonce.lock(addressString);
 
+        logger.trace("Lock cookie: " + lockCookie);
         BigInteger nonce = getNonce(senderAddr);
 
         if (model != null && model.equals("Preferences")) {
@@ -536,9 +570,15 @@ public class BlockchainObjectWriter {
         Repository repo = ethereum.getPendingState();
         BigInteger balance = repo.getBalance(senderAddr);
 
-        logger.debug("Submit     user: " + user.getDisplayName() + ", address: " + addressString + ", Balance: " + balance.toString());
+        logger.debug("createTransaction     user: " + user.getDisplayName() + ", address: " + addressString + ", Balance: " + balance.toString());
 
-        logger.trace("Submit     before create transaction");
+        transaction = ethereum.createTransaction(nonce, gasPrice, gas, receiverAddr, value, jsonString.getBytes());
+        transaction.sign(senderKey);
+
+        return new AbstractMap.SimpleEntry<>(transaction, lockCookie + "|" + addressString);
+    }
+
+    private Future<Transaction> submitTransaction(Transaction transaction, long lockCookie, String addressString) throws ORMException {
 
         boolean mining = ethereum.getBlockMiner().isMining();
         Collection<Channel> activePeers = ethereum.getChannelManager().getActivePeers();
@@ -563,23 +603,27 @@ public class BlockchainObjectWriter {
             throw new ORMException(message);
         }
 
-        transaction = ethereum.createTransaction(nonce, gasPrice, gas, receiverAddr, value, jsonString.getBytes());
-        transaction.sign(senderKey);
-
         long nonZeroes = transaction.nonZeroDataBytes();
         long zeroVals = ArrayUtils.getLength(transaction.getData()) - nonZeroes;
 
         logger.trace("Submit  nonZeroes : " + nonZeroes);
-        logger.trace("Submit   zeroVals : " + zeroVals);
+        logger.trace("Submit  zeroVals : " + zeroVals);
 
-        logger.trace("Submit     submitting transaction from address: " + addressString);
+        logger.debug("Submit  submitting transaction from address: " + addressString);
 
-        future = ethereum.submitTransaction(transaction);
-
+        Future<Transaction> future = null;
+        try {
+            future = ethereum.submitTransaction(transaction);
+        } catch (Exception e) {
+            logger.trace("Unlock cookie: " + lockCookie);
+            writerLockNonce.unlock(addressString, lockCookie);
+            throw e;
+        }
+        logger.trace("Unlock cookie: " + lockCookie);
         writerLockNonce.unlock(addressString, lockCookie);
 
         logger.trace("END createAndSubmitTransaction()");
-        return new AbstractMap.SimpleEntry(transaction, future);
+        return future;
     }
 
     private AttrID writeData(JSONArray jsonArray, BlockchainObject blockchainObject) throws ORMException {
@@ -591,20 +635,30 @@ public class BlockchainObjectWriter {
             throw new ORMException("Blockchain not found for writing");
         } else {
 
-            Map.Entry<Transaction, Future<Transaction>> result = createAndSubmitTransaction(jsonArray);
-            Transaction tx = result.getKey();
-            Future<Transaction> future = result.getValue();
+            Map.Entry<Transaction, String> result = createTransaction(jsonArray);
+            Transaction transaction = result.getKey();
 
-            String transactionID = Hex.toHexString(tx.getHash());
+            String transactionID = Hex.toHexString(transaction.getHash());
             PendingTransactionInformation pendingTransactionInformation = null;
 
             if (!Main.pendingTransaction.containsKey(transactionID)) {
 
-                pendingTransactionInformation = new PendingTransactionInformation(tx);
+                pendingTransactionInformation = new PendingTransactionInformation(transaction);
                 pendingTransactionInformation.uid = (String) ((JSONObject) jsonArray.get(1)).get("uid");
                 pendingTransactionInformation.object = blockchainObject;
                 Main.pendingTransaction.put(transactionID, pendingTransactionInformation);
 
+                synchronized (blockchainObject) {
+                    blockchainObject.notify();
+                }
+
+                long lockCookie = Long.parseLong(result.getValue().split("\\|")[0]);
+
+                ECKey sender = ECKey.fromPrivate(Hex.decode(user.getPrivateKey().toString()));
+                byte[] senderAddr = sender.getAddress();
+                String addressString = result.getValue().split("\\|")[1];
+
+                Future<Transaction> future = submitTransaction(transaction, lockCookie, addressString);
 
                 logger.trace("After submit transaction");
                 try {
@@ -613,12 +667,14 @@ public class BlockchainObjectWriter {
                     logger.error("Error during transaction submit: " + ex.toString());
                 }
 
-                logger.debug("transactionID: " + transactionID);
-                try {
-                    synchronized (tx) {
-                        tx.wait();
+                if (pendingTransactionInformation.exception == null) {
+                    try {
+                        synchronized (transaction) {
+                            logger.debug("Transaction WAIT: " + transactionID);
+                            transaction.wait();
+                        }
+                    } catch (InterruptedException ex) {
                     }
-                } catch (InterruptedException ex) {
                 }
             } else {
                 pendingTransactionInformation = Main.pendingTransaction.get(transactionID);

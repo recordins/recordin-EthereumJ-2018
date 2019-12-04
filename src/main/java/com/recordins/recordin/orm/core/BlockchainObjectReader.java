@@ -289,7 +289,7 @@ public class BlockchainObjectReader<T extends BlockchainObject> {
         blockchainObject.setId(id);
         result.put("Model", blockchainObject.getModel());
         result.put("Name", blockchainObject.getDisplayName());
-        result.put("relationship", "110");
+        //result.put("relationship", "110");
 
 
         result.put("children", new JSONArray());
@@ -1296,18 +1296,21 @@ public class BlockchainObjectReader<T extends BlockchainObject> {
                 } else {
 
                     BlockchainIndex<String, String> currentVersionsIndex = BlockchainObjectIndex.getInstance().getIndex(BlockchainObjectIndex.INDEX_TYPE.CURRENT_VERSIONS);
-                    String idString = currentVersionsIndex.get(object.getModelID().getUID());
-                    model = (Model) readWithoutCheck(new AttrID(idString));
-
+                    if (object.getModelID() != null) {
+                        String idString = currentVersionsIndex.get(object.getModelID().getUID());
+                        model = (Model) readWithoutCheck(new AttrID(idString));
+                    }
                 }
             }
 
-            AttrList<AttrAttribute> attributesList = model.getAttributes();
-            for (Attr attr : attributesList) {
-                AttrAttribute attribute = (AttrAttribute) attr;
+            if (model != null) {
+                AttrList<AttrAttribute> attributesList = model.getAttributes();
+                for (Attr attr : attributesList) {
+                    AttrAttribute attribute = (AttrAttribute) attr;
 
-                if (!checkAttributeReadAccess(attribute, object, user)) {
-                    object.remove(attribute.Name);
+                    if (!checkAttributeReadAccess(attribute, object, user)) {
+                        object.remove(attribute.Name);
+                    }
                 }
             }
         }

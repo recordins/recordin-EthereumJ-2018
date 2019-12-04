@@ -275,6 +275,14 @@ public class FILE_RECORDIN extends FILE implements IBlockchainAuthenticator {
         String username = this.getCredentials(request).getKey();
         String password = this.getCredentials(request).getValue();
 
+        if (username.equals("")) {
+            username = request.getParameter("username");
+        }
+
+        if (password.equals("")) {
+            password = request.getParameter("password");
+        }
+
         byte[] bytesOfPassword = password.getBytes();
         bytesOfPassword = Arrays.copyOf(bytesOfPassword, 64);
 

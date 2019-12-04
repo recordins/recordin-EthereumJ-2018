@@ -492,12 +492,12 @@ function loadIDS(IDS) {
         let get = '/orm/Read?ids=' + JSON.stringify(missingIDS);
         let res = RequestGET(get, false);
         if (typeof (res) !== "undefined") {
-            res = JSON.parse(res);
+            //res = JSON.parse(res);
 
             for (let i = 0; i < res.length; i++) {
 
-                if (!IDSCacheContains(res[i][1].id)) {
-                    if (typeof (res[i]) !== "undefined") {
+                if (res[i] != null && typeof (res[i]) !== "undefined") {
+                    if (!IDSCacheContains(res[i][1].id)) {
                         json_context.IDSCache.push(res[i]);
                     }
                 }

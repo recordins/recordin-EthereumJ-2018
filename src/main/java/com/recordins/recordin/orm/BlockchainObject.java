@@ -35,6 +35,7 @@ import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentSkipListMap;
 
 import com.recordins.recordin.utils.DeepCopy;
+import org.cheetah.webserver.CheetahClassLoader;
 import org.cheetah.webserver.CheetahWebserver;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -424,7 +425,15 @@ public class BlockchainObject implements Serializable, Comparable<BlockchainObje
                     }
 
                     if (attribute != null) {
-                        Class c = CheetahWebserver.getInstance().getClassLoader().loadClass("com.recordins.recordin.orm.attribute." + attribute.AttrType);
+                        CheetahClassLoader cl;
+
+                        if (CheetahWebserver.getInstance() != null) {
+                            cl = CheetahWebserver.getInstance().getClassLoader();
+                        } else {
+                            cl = new CheetahClassLoader(Thread.currentThread().getContextClassLoader());
+                        }
+
+                        Class c = cl.loadClass("com.recordins.recordin.orm.attribute." + attribute.AttrType);
                         Attr attr = (Attr) c.newInstance();
                         this.put(key, attr);
                         return attr;

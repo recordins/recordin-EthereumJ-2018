@@ -53,11 +53,11 @@ public class ReadTree extends Page {
 
         JSONObject jsonResultTree = new JSONObject();
 
-        String model = request.getParameter("model");
+        //String model = request.getParameter("model");
         String id = request.getParameter("id");
 
         this.debugString.append(" -- PARAMETERS -- ").append(System.lineSeparator());
-        this.debugString.append("model       : " + model).append(System.lineSeparator());
+        //this.debugString.append("model       : " + model).append(System.lineSeparator());
         this.debugString.append("id          : " + id).append(System.lineSeparator());
         this.debugString.append(" -- ---------- -- ").append(System.lineSeparator());
 

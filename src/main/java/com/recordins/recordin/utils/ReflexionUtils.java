@@ -85,7 +85,8 @@ public class ReflexionUtils {
                     if (filePath.endsWith(".class")) {
                         try {
                             //result.add(Class.forName(packageNames.get(file) + '.' + filePath.substring(0, filePath.length() - 6)));
-                            result.add(CheetahWebserver.getInstance().getClassLoader().loadClass(packageNames.get(file) + '.' + filePath.substring(0, filePath.length() - 6)));
+
+                            result.add(cl.loadClass(packageNames.get(file) + '.' + filePath.substring(0, filePath.length() - 6)));
                         } catch (Throwable e) {
                         }
                     }

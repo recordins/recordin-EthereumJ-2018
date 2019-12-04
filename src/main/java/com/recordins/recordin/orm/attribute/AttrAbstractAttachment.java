@@ -170,6 +170,21 @@ public abstract class AttrAbstractAttachment implements List<String>, Attr {
         logger.trace("END AttrAbstractAttachment()");
     }
 
+    @JsonIgnore
+    public String getName() throws ORMException {
+
+        String result = "";
+        try {
+
+            result = this.get(0);
+
+        } catch (Exception ex) {
+            throw new ORMException("Error reading attachment name: " + ex.toString());
+        }
+
+        return result;
+    }
+
     public static String getSignature(byte[] content, User user) {
 
         byte[] datahash = HashUtil.sha3(content);

@@ -20,6 +20,7 @@
 package com.recordins.recordin.orm;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.recordins.recordin.orm.action.ActionDefinition;
 import com.recordins.recordin.orm.attribute.AttrID;
 import com.recordins.recordin.orm.attribute.AttrIDList;
 import com.recordins.recordin.orm.attribute.AttrString;
@@ -40,6 +41,11 @@ public class Group extends BlockchainObject {
         super();
 
         actionList.clear();
+        this.actionList.add(new ActionDefinition("Archive", "Archive", "Execute", "{}"));
+        this.actionList.add(new ActionDefinition("UnArchive", "UnArchive", "Execute", "{}"));
+        this.actionList.add(new ActionDefinition("Delete", "Delete", "ExecuteConfirm", "{\"Message\":\"Would you like to delete selected object(s) ?\"}"));
+        this.actionList.add(new ActionDefinition("ChangeOwner", "Change Owner", "SelectSingle", "{\"model\":\"User\"}"));
+        this.actionList.add(new ActionDefinition("SetACL", "Set ACL", "SelectMulti", "{\"model\":\"ACL\"}"));
 
         setModel(this.getClass().getSimpleName());
     }

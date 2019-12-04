@@ -19,10 +19,20 @@
 
 package com.recordins.recordin.orm.exception;
 
+import org.ethereum.core.Transaction;
+
 public class ORMException extends Exception {
+
+    public Transaction transaction = null;
 
     public ORMException(String message) {
         super(message);
+        this.printStackTrace();
+    }
+
+    public ORMException(String message, Transaction transaction) {
+        super(message);
+        this.transaction = transaction;
         this.printStackTrace();
     }
 }

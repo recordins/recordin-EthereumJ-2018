@@ -28,6 +28,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Map;
 
+import org.cheetah.webserver.CheetahClassLoader;
 import org.cheetah.webserver.CheetahWebserver;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -63,7 +64,16 @@ public class FactoryPlatform_1_0 extends AbstractFactoryPlatform {
 
             //Class objectClass = Class.forName(className);
 
-            Class objectClass = CheetahWebserver.getInstance().getClassLoader().loadClass(className);
+            CheetahClassLoader cl;
+
+            if (CheetahWebserver.getInstance() != null) {
+                cl = CheetahWebserver.getInstance().getClassLoader();
+            } else {
+                cl = new CheetahClassLoader(Thread.currentThread().getContextClassLoader());
+            }
+
+            Class objectClass = cl.loadClass(className);
+
 
             /*
             logger.trace("---------------------------------------");
@@ -223,7 +233,16 @@ public class FactoryPlatform_1_0 extends AbstractFactoryPlatform {
                 //objectClass = Class.forName(entry.getValue().get(0).toString());
 
                 currentAttributeName = entry.getKey();
-                Class objectClass = CheetahWebserver.getInstance().getClassLoader().loadClass(entry.getValue().get(0).toString());
+
+                CheetahClassLoader cl;
+
+                if (CheetahWebserver.getInstance() != null) {
+                    cl = CheetahWebserver.getInstance().getClassLoader();
+                } else {
+                    cl = new CheetahClassLoader(Thread.currentThread().getContextClassLoader());
+                }
+
+                Class objectClass = cl.loadClass(entry.getValue().get(0).toString());
 
                 if (currentAttributeName.contains(".")) {
                     currentAttributeName = currentAttributeName.substring(currentAttributeName.lastIndexOf(".") + 1);

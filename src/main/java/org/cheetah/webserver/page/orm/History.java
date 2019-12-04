@@ -68,7 +68,7 @@ public class History extends Page {
         String id = request.getParameter("id");
 
         this.debugString.append(" -- PARAMETERS -- ").append(System.lineSeparator());
-        this.debugString.append("uid         : " + id).append(System.lineSeparator());
+        this.debugString.append("id         : " + id).append(System.lineSeparator());
         this.debugString.append(" -- ---------- -- ").append(System.lineSeparator());
 
         try {

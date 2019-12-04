@@ -33,6 +33,10 @@ import com.recordins.recordin.orm.core.BlockchainObjectWriter;
 import com.recordins.recordin.utils.DeepCopy;
 import org.cheetah.webserver.CheetahWebserver;
 import org.ethereum.core.*;
+import org.ethereum.net.client.Capability;
+import org.ethereum.net.client.ConfigCapabilities;
+import org.ethereum.net.shh.ShhHandler;
+import org.ethereum.net.swarm.bzz.BzzHandler;
 import org.ethereum.util.BIUtil;
 
 import java.math.BigInteger;
@@ -51,6 +55,9 @@ import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spongycastle.util.encoders.Hex;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import static org.ethereum.net.eth.EthVersion.fromCode;
 
 public class RecordinEthereumListener extends CompositeEthereumListener {
 //public class RecordinEthereumListener implements EthereumListener {
@@ -447,10 +454,78 @@ public class RecordinEthereumListener extends CompositeEthereumListener {
         }
     }
 
+    /*
+    @Autowired
+    ConfigCapabilities configCapabilities;
+
+    public List<Capability> getSupportedCapabilities(HelloMessage hello) {
+        List<Capability> configCaps = configCapabilities.getConfigCapabilities();
+        List<Capability> supported = new ArrayList<>();
+
+        List<Capability> eths = new ArrayList<>();
+
+        for (Capability cap : hello.getCapabilities()) {
+            if (configCaps.contains(cap)) {
+                if (cap.isEth()) {
+                    eths.add(cap);
+                } else {
+                    supported.add(cap);
+                }
+            }
+        }
+
+        if (eths.isEmpty()) {
+            return supported;
+        }
+
+        // we need to pick up
+        // the most recent Eth version
+        Capability highest = null;
+        for (Capability eth : eths) {
+            if (highest == null || highest.getVersion() < eth.getVersion()) {
+                highest = eth;
+            }
+        }
+
+        supported.add(highest);
+        return supported;
+    }
+
     @Override
     public void onHandShakePeer(Channel channel, HelloMessage helloMessage) {
         logger.debug("Listener onHandShakePeer: " + helloMessage);
-    }
+
+        List<Capability> capInCommon = getSupportedCapabilities(helloMessage);
+        channel.initMessageCodes(capInCommon);
+
+        logger.warn("ShhHandler.VERSION: " + ShhHandler.VERSION);
+        logger.warn("BzzHandler.VERSION: " + BzzHandler.VERSION);
+
+        for (Capability capability : capInCommon) {
+            if (capability.getName().equals(Capability.ETH)) {
+
+                // Activate EthHandler for this peer
+                logger.warn("Capability.ETH: " + Capability.ETH);
+                logger.warn("ETH version: " + capability.getVersion());
+            } else if
+            (capability.getName().equals(Capability.SHH) &&
+                            capability.getVersion() == ShhHandler.VERSION) {
+
+
+                logger.warn("Capability.SHH: " + Capability.SHH);
+                logger.warn("ShhHandler.VERSION: " + ShhHandler.VERSION);
+
+
+            } else if
+            (capability.getName().equals(Capability.BZZ) &&
+                            capability.getVersion() == BzzHandler.VERSION) {
+
+                logger.warn("Capability.BZZ: " + Capability.BZZ);
+                logger.warn("BzzHandler.VERSION: " + BzzHandler.VERSION);
+            }
+        }
+     }
+     */
 
     @Override
     public void onNoConnections() {
@@ -480,15 +555,16 @@ public class RecordinEthereumListener extends CompositeEthereumListener {
             String transactionID = Hex.toHexString(transaction.getHash());
             if (Main.pendingTransaction.containsKey(transactionID)) {
 
-                logger.debug("Transaction NOTIFY: " + transactionID);
                 PendingTransactionInformation pendingTransactionInformation = Main.pendingTransaction.get(transactionID);
-                pendingTransactionInformation.exception = new ORMException("Transaction DROPPED: " + txReceipt.getError());
+                pendingTransactionInformation.exception = new ORMException("Transaction DROPPED: " + txReceipt.getError(), txReceipt.getTransaction());
 
                 Transaction tx = pendingTransactionInformation.transaction;
+                logger.debug("Transaction NOTIFY: " + transactionID);
                 synchronized (tx) {
                     tx.notify();
                 }
 
+                /*
                 BigInteger nonce = new BigInteger(transaction.getNonce());
                 if (txReceipt.getError().contains("Invalid nonce") && nonce.compareTo(BigInteger.valueOf(0)) > 0) {
 
@@ -507,6 +583,8 @@ public class RecordinEthereumListener extends CompositeEthereumListener {
                         logger.error("Error resending transaction: " + e.toString());
                     }
                 }
+
+                 */
             } else {
 
                 byte[] objectData = transaction.getData();
@@ -534,8 +612,9 @@ public class RecordinEthereumListener extends CompositeEthereumListener {
                 }
 
                 Main.pendingTransaction.put(transactionID, pendingTransactionInformation);
-                pendingTransactionInformation.exception = new ORMException("Transaction DROPPED: " + txReceipt.getError());
+                pendingTransactionInformation.exception = new ORMException("Transaction DROPPED: " + txReceipt.getError(), txReceipt.getTransaction());
             }
+
         }
     }
 

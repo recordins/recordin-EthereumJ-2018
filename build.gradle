@@ -7,7 +7,7 @@ plugins {
 apply plugin: 'java'
 
 group 'recordins'
-version '19.01'
+version '19.04'
 version = version + ("master" == gitCurBranch() ? "-RELEASE" : "-SNAPSHOT")
 
 def gitCurBranch() {
@@ -311,18 +311,15 @@ task switch_network_config {
             file("etc/recordin.properties").withInputStream { props.load(it) }
 
             if(props.getProperty("NodeStandalone").equals("true")){
-                print "delete1\n"
                 delete etc_folder
             }
             else{
 
-                if(!props.getProperty("PeerActive").equals("[]")){
-                    delete etc_folder
-                }
+                //if(!props.getProperty("PeerActive").equals("[]")){
+                //    delete etc_folder
+                //}
             }
         }
-
-        print "2 etc_file_folder.exists(): " + etc_file_folder.exists() + "\n"
     }
 
     doLast {

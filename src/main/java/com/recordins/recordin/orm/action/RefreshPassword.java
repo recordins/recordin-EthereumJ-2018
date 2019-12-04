@@ -45,7 +45,7 @@ public class RefreshPassword implements Action {
     }
 
     public RefreshPassword(String args) {
-        logger.trace("START: UnArchive(ArrayList)");
+        logger.trace("START: RefreshPassword(ArrayList)");
 
         JSONParser parser = new JSONParser();
         try {
@@ -59,10 +59,10 @@ public class RefreshPassword implements Action {
             }
 
         } catch (ParseException ex) {
-            logger.error("Error parsing Actin arguments: " + ex.toString());
+            logger.error("Error parsing Action arguments: " + ex.toString());
         }
 
-        logger.trace("END: UnArchive()");
+        logger.trace("END: RefreshPassword()");
     }
 
     @Override

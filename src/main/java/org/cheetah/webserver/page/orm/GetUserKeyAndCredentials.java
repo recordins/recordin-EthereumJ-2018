@@ -83,7 +83,7 @@ public class GetUserKeyAndCredentials extends Page {
 
         String nodeId = request.getParameter("nodeID");
         String id = request.getParameter("id");
-        String attributeName = request.getParameter("attributeName");
+        //String attributeName = request.getParameter("attributeName");
 
         if (nodeId == null) {
             nodeId = "";

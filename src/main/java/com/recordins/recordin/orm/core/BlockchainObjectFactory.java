@@ -75,7 +75,13 @@ public class BlockchainObjectFactory {
             if (applicationContext.containsKey("NodeDefaultPlatformVersion")) {
                 defaultPlatformVersion = applicationContext.getString("NodeDefaultPlatformVersion").replaceAll("\\.", "_");
             }
-            CheetahClassLoader cl = CheetahWebserver.getInstance().getClassLoader();
+            CheetahClassLoader cl;
+
+            if (CheetahWebserver.getInstance() != null) {
+                cl = CheetahWebserver.getInstance().getClassLoader();
+            } else {
+                cl = new CheetahClassLoader(Thread.currentThread().getContextClassLoader());
+            }
 
             FactoryPlatform factoryPlatform = null;
             Class c = null;

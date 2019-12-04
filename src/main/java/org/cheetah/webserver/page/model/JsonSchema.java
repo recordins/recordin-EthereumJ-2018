@@ -218,6 +218,7 @@ public class JsonSchema extends Page {
             }
         }
 
+        //logger.debug("jsonResult: " + jsonResult);
         body.println(jsonResult);
 
         logger.debug(" END : Handle Request");

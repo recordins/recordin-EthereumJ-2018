@@ -99,7 +99,11 @@ public class Write extends Page {
 
             logger.trace("OBJECT toString : " + object.toString());
 
-            BlockchainObjectWriter.getInstance(user).write(object, true);
+            String transactionID = BlockchainObjectWriter.getInstance(user).writeAsync(object);
+
+            logger.debug("transactionID : " + transactionID);
+            jsonResult.put("MessageTransactionID", transactionID);
+
         } catch (ORMException ex) {
             jsonResult.put("MessageType", "Error");
             jsonResult.put("MessageValue", "Error during object writing: " + ex.toString());

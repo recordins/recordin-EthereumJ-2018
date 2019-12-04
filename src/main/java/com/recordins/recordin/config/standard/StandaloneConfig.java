@@ -88,6 +88,7 @@ public abstract class StandaloneConfig {
                     + "mine.minGasPrice = 150 \n"
                     + "mine.fullDataSet = true \n"
                     + "database.reset = false \n"
+                    + "prune.enabled = false \n"
                     + "cache.flush.blocks = 1000";
 
     public abstract Main sampleBean();

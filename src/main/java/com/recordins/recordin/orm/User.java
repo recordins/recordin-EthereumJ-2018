@@ -393,6 +393,7 @@ public class User extends GDPRObject {
         this.sessionCookie = sessionCookie;
     }
 
+
     public AttrString getAddress() {
         return address;
     }

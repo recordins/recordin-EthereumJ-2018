@@ -25,6 +25,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Map.Entry;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.cheetah.webserver.CheetahClassLoader;
 import org.cheetah.webserver.CheetahWebserver;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -99,7 +100,15 @@ public class AttrAttribute extends AttrString implements Attr {
                                         Class[] stringArgsClass = new Class[]{String.class};
                                         Class objectClass;
                                         //objectClass = Class.forName(attributeArray.get(0).toString());
-                                        objectClass = CheetahWebserver.getInstance().getClassLoader().loadClass(attributeArray.get(0).toString());
+                                        CheetahClassLoader cl;
+
+                                        if (CheetahWebserver.getInstance() != null) {
+                                            cl = CheetahWebserver.getInstance().getClassLoader();
+                                        } else {
+                                            cl = new CheetahClassLoader(Thread.currentThread().getContextClassLoader());
+                                        }
+
+                                        objectClass = cl.loadClass(attributeArray.get(0).toString());
 
                                         Constructor stringArgsConstructor = objectClass.getConstructor(stringArgsClass);
 

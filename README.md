@@ -44,7 +44,7 @@ Extract the archive, and run **recordin.sh** on Linux, or **recordin.bat** on Wi
 
 Then open your Internet browser, and go to the following URL: [http://localhost:8080](http://localhost:8080)
 
-**Beaware** that the first time, the platform takes about 10mn to initiate.
+**Beware** that the first time, the platform takes about 10mn to initiate.
 Record'in requires at least IE 11 for the web interface to run correctly.
  
 # Contact

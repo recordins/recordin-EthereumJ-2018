@@ -221,6 +221,8 @@ public class GetAttachment extends Page {
 
                     DataInputStream in = attachment.getInputStream(new AttrID(id), attributeName, user);
 
+                    response.setValue("Content-Disposition", "filename=" + attachment.getName());
+
                     if (in != null) {
 
                         byte[] buffer = new byte[1048576];

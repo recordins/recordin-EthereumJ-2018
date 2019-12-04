@@ -70,7 +70,8 @@ public class Read extends Page {
             for (Object id : jsonArrayID) {
                 if (!((String) id).equals("null")) {
                     try {
-                        jsonObjectsResult.add(BlockchainObjectReader.getInstance(user).readJson(new AttrID(String.valueOf(id))));
+                        //jsonObjectsResult.add(BlockchainObjectReader.getInstance(user).readJson(new AttrID(String.valueOf(id))));
+                        jsonObjectsResult.add(BlockchainObjectReader.getInstance(user).read(new AttrID(String.valueOf(id))));
                     } catch (Exception ex) {
 
                         JSONObject jsonResultError = new JSONObject();
@@ -86,13 +87,14 @@ public class Read extends Page {
                         }
                         */
                         logger.error("Error reading object with id: " + id + ": " + ex.toString());
+                        ex.printStackTrace();
                         //send websoscket
                     }
                 }
             }
 
-            jsonResult.replace("MessageValue", jsonObjectsResult.toJSONString());
-
+            jsonResult.replace("MessageValue", jsonObjectsResult);
+            //jsonResult.replace("MessageValue", jsonObjectsResult.toJSONString())
         } catch (Exception ex) {
             jsonResult.put("MessageType", "Error");
             jsonResult.put("MessageValue", "Error reading objects: " + ex.toString());

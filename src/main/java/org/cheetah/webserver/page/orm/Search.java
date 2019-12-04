@@ -117,7 +117,7 @@ public class Search extends Page {
         }
 
         this.debugString.append(" -- PARAMETERS -- ").append(System.lineSeparator());
-        this.debugString.append("menuID      : " + menuID).append(System.lineSeparator());
+        //this.debugString.append("menuID      : " + menuID).append(System.lineSeparator());
         this.debugString.append("model       : " + model).append(System.lineSeparator());
         this.debugString.append("index       : " + index).append(System.lineSeparator());
         this.debugString.append("oldVersion  : " + oldVersion).append(System.lineSeparator());

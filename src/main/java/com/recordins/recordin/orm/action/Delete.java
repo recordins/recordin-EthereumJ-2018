@@ -60,7 +60,7 @@ public class Delete implements Action {
             }
 
         } catch (ParseException ex) {
-            logger.error("Error parsing Actin arguments: " + ex.toString());
+            logger.error("Error parsing Action arguments: " + ex.toString());
         }
 
         logger.trace("END: Delete()");

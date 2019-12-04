@@ -255,6 +255,7 @@ public class Main {
 
             //EthereumFactory.createEthereum(new Class[]{PrivateNetworkCasperExtendedConfigImpl.class});
             EthereumFactory.createEthereum(new Class[]{PrivateNetworkConfigImpl.class});
+
         }
 
         logger.trace("END main()");
@@ -340,6 +341,11 @@ public class Main {
 
             @Override
             public void run() {
+
+                logger.debug("Trace: " + config.getGenesis().toString());
+                logger.debug("Trace: " + config.getGenesis().toFlatString());
+                logger.debug("Trace: " + config.genesisInfo());
+
 
                 SyncStatus syncStatus = ethereum.getSyncStatus();
                 if (syncStatus.getStage().name().equals("Complete")) {

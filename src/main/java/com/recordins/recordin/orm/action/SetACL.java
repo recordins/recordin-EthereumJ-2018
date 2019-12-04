@@ -48,7 +48,7 @@ public class SetACL implements Action {
     }
 
     public SetACL(String args) {
-        logger.debug("START: ChangeOwner(String)");
+        logger.debug("START: SetACL(String)");
 
         JSONParser parser = new JSONParser();
         try {
@@ -67,7 +67,7 @@ public class SetACL implements Action {
             logger.error("Error parsing Action arguments: " + ex.toString());
         }
 
-        logger.debug("END: ChangeOwner()");
+        logger.debug("END: SetACL()");
     }
 
     @Override
