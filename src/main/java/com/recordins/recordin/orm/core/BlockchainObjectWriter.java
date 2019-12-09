@@ -96,6 +96,7 @@ public class BlockchainObjectWriter {
     private ConcurrentHashMap<String, BigInteger> addressNonces = new ConcurrentHashMap();
 
     private static BlockchainLock<String> writerLockNonce = new BlockchainLock();
+    private static BlockchainLock<String> writerLockAsync = new BlockchainLock();
 
     /**
      * Returns an blockchainObjectIndex of {@link BlockchainObjectWriter} with
@@ -467,8 +468,6 @@ public class BlockchainObjectWriter {
 
                 public void run() {
 
-                    //String lockItem = user.getUid().toString();
-                    //long cookie = writerLockAsync.lock(1);
                     try {
                         AttrID asyncResult = writeData(jsonArray, blockchainObject);
                         if (CheetahWebserver.getInstance() != null) {
@@ -500,8 +499,6 @@ public class BlockchainObjectWriter {
                         sendWebsocket(jsonResult.toJSONString(), user);
                         logger.error("Error during asynchronous object writing: " + ex.toString());
                     }
-
-                    //writerLockAsync.unlock(1, cookie);
                 }
             };
             t.start();
@@ -523,7 +520,7 @@ public class BlockchainObjectWriter {
     }
 
     private Map.Entry<Transaction, String> createTransaction(JSONArray jsonArray) throws ORMException {
-        logger.trace("START createAndSubmitTransaction(String)");
+        logger.trace("START createTransaction(String)");
 
         Transaction transaction = null;
         Future<Transaction> future = null;
@@ -538,7 +535,9 @@ public class BlockchainObjectWriter {
         String model = (String) ((JSONObject) jsonArray.get(1)).get("model");
         String displayName = (String) ((JSONObject) jsonArray.get(1)).get("displayName");
 
-        if (ethereum.getBlockchain().getBestBlock().getNumber() < 1 || (model != null && model.equals("Preferences")) || (!CheetahWebserver.getInstance().isSessionAuthenticationEnabled())) {
+        long bestBlockNumber = ethereum.getBlockchain().getBestBlock().getNumber();
+
+        if (bestBlockNumber < 1 || (model != null && model.equals("Preferences")) || (!CheetahWebserver.getInstance().isSessionAuthenticationEnabled())) {
             sender = ECKey.fromPrivate(Hex.decode("1c3eaa38a0983eeba090b63b06162ec9dca6a6d3cae448a78ab02ad085351ee5"));
             senderAddr = sender.getAddress();
             senderKey = sender.getPrivKeyBytes();
@@ -547,7 +546,6 @@ public class BlockchainObjectWriter {
         String addressString = Hex.toHexString(senderAddr);
         long lockCookie = writerLockNonce.lock(addressString);
 
-        logger.trace("Lock cookie: " + lockCookie);
         BigInteger nonce = getNonce(senderAddr);
 
         if (model != null && model.equals("Preferences")) {
@@ -575,10 +573,12 @@ public class BlockchainObjectWriter {
         transaction = ethereum.createTransaction(nonce, gasPrice, gas, receiverAddr, value, jsonString.getBytes());
         transaction.sign(senderKey);
 
+        logger.trace("END createTransaction(String)");
         return new AbstractMap.SimpleEntry<>(transaction, lockCookie + "|" + addressString);
     }
 
     private Future<Transaction> submitTransaction(Transaction transaction, long lockCookie, String addressString) throws ORMException {
+        logger.trace("START submitTransaction(String)");
 
         boolean mining = ethereum.getBlockMiner().isMining();
         Collection<Channel> activePeers = ethereum.getChannelManager().getActivePeers();
@@ -615,14 +615,12 @@ public class BlockchainObjectWriter {
         try {
             future = ethereum.submitTransaction(transaction);
         } catch (Exception e) {
-            logger.trace("Unlock cookie: " + lockCookie);
             writerLockNonce.unlock(addressString, lockCookie);
             throw e;
         }
-        logger.trace("Unlock cookie: " + lockCookie);
         writerLockNonce.unlock(addressString, lockCookie);
 
-        logger.trace("END createAndSubmitTransaction()");
+        logger.trace("END submitTransaction()");
         return future;
     }
 

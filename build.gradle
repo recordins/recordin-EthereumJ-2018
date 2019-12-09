@@ -31,18 +31,12 @@ if (!hasProperty('mainClass')) {
     ext.mainClass = 'com.recordins.recordin.Main'
 }
 
-// need higher version than ide default to support java 11
-// this is for legacy gradle < 5.0
-task wrapper(type: Wrapper) {
-    gradleVersion = "4.9"
-}
 
-// this is for gradle >= 5.0
 wrapper {
-    gradleVersion = "4.9"
+    gradleVersion = "5.2.1"
 }
 
-wrapper.gradleVersion = '4.9'
+wrapper.gradleVersion = '5.2.1'
 
 repositories {
     mavenCentral()
@@ -62,6 +56,7 @@ dependencies {
     compile "com.fasterxml.jackson.core:jackson-databind:2.9.4"
      */
 
+    compile group: 'javax.annotation', name: 'javax.annotation-api', version: '1.3.2'
 
     /* use only dependencies found inside the lib folder*/
     compile fileTree(dir: 'lib', include: '*.jar')
@@ -177,6 +172,7 @@ def libFolder() {
 
 clean {
     doFirst {
+
         def jarname = rootProject.name + "-" + version + ".jar"
         def file = new File(jarname)
 
@@ -184,6 +180,7 @@ clean {
             delete jarname
         }
 
+        println "cleaned jarname"
         /*
         jarname = rootProject.name + 'Test' + "-" + version + ".jar"
         file = new File(jarname)
@@ -228,6 +225,7 @@ build {
 }
 
 compileJava.finalizedBy jar
+
 
 task reset_database_standalone {
 
@@ -365,3 +363,147 @@ task switch_network_node_config {
         }
     }
 }
+
+
+task runStadalone {
+    dependsOn 'clean'
+    dependsOn 'build'
+    dependsOn 'switch_standalone_config'
+    tasks.findByName('build').mustRunAfter 'clean'
+    tasks.findByName('switch_standalone_config').mustRunAfter 'release'
+
+    doLast {
+        def jarname = rootProject.name + "-" + version + ".jar"
+        javaexec {
+            main = "-jar";
+            args = [
+                    "-Xms3G",
+                    "-Xmx3G",
+                    "-XX:+UseG1GC",
+                    "-jar",
+                    jarname
+            ]
+        }
+    }
+
+}
+
+task runStadaloneReset {
+    dependsOn 'clean'
+    dependsOn 'reset_database_standalone'
+    dependsOn 'build'
+    dependsOn 'switch_standalone_config'
+    tasks.findByName('reset_database_standalone').mustRunAfter 'clean'
+    tasks.findByName('build').mustRunAfter 'reset_database_standalone'
+    tasks.findByName('switch_standalone_config').mustRunAfter 'release'
+
+    doLast {
+        def jarname = rootProject.name + "-" + version + ".jar"
+        javaexec {
+            main = "-jar";
+            args = [
+                    "-Xms3G",
+                    "-Xmx3G",
+                    "-XX:+UseG1GC",
+                    "-jar",
+                    jarname
+            ]
+        }
+    }
+
+}
+
+task runNetworkFirstNode {
+    dependsOn 'clean'
+    dependsOn 'build'
+    dependsOn 'switch_network_config'
+    tasks.findByName('build').mustRunAfter 'clean'
+    tasks.findByName('switch_network_config').mustRunAfter 'release'
+
+    doLast {
+        def jarname = rootProject.name + "-" + version + ".jar"
+        javaexec {
+            main = "-jar";
+            args = [
+                    "-Xms2G",
+                    "-Xmx2G",
+                    "-XX:+UseG1GC",
+                    "-jar",
+                    jarname
+            ]
+        }
+    }
+
+}
+
+task runNetworkNode {
+    dependsOn 'clean'
+    dependsOn 'build'
+    dependsOn 'switch_network_node_config'
+    tasks.findByName('build').mustRunAfter 'clean'
+    tasks.findByName('switch_network_node_config').mustRunAfter 'release'
+
+    doLast {
+        def jarname = rootProject.name + "-" + version + ".jar"
+        javaexec {
+            main = "-jar";
+            args = [
+                    "-Xms2G",
+                    "-Xmx2G",
+                    jarname
+            ]
+        }
+    }
+
+}
+
+task runNetworkFirstNodeReset {
+    dependsOn 'clean'
+    dependsOn 'reset_database_network'
+    dependsOn 'build'
+    dependsOn 'switch_network_config'
+    tasks.findByName('reset_database_network').mustRunAfter 'clean'
+    tasks.findByName('build').mustRunAfter 'reset_database_network'
+    tasks.findByName('switch_network_config').mustRunAfter 'release'
+
+    doLast {
+        def jarname = rootProject.name + "-" + version + ".jar"
+        javaexec {
+            main = "-jar";
+            args = [
+                    "-Xms2G",
+                    "-Xmx2G",
+                    "-XX:+UseG1GC",
+                    "-jar",
+                    jarname
+            ]
+        }
+    }
+
+}
+
+task runNetworkNodeReset {
+    dependsOn 'clean'
+    dependsOn 'reset_database_network'
+    dependsOn 'build'
+    dependsOn 'switch_network_node_config'
+    tasks.findByName('reset_database_network').mustRunAfter 'clean'
+    tasks.findByName('build').mustRunAfter 'reset_database_network'
+    tasks.findByName('switch_network_node_config').mustRunAfter 'release'
+
+    doLast {
+        def jarname = rootProject.name + "-" + version + ".jar"
+        javaexec {
+            main = "-jar";
+            args = [
+                    "-Xms2G",
+                    "-Xmx2G",
+                    "-XX:+UseG1GC",
+                    "-jar",
+                    jarname
+            ]
+        }
+    }
+
+}
+

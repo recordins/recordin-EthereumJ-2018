@@ -19,18 +19,29 @@
 
 package com.recordins.recordin.utils;
 
+import com.recordins.recordin.Main;
+import com.recordins.recordin.orm.attribute.AttrID;
+import com.recordins.recordin.orm.exception.ORMException;
+import org.cheetah.webserver.CheetahWebserver;
+import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.spongycastle.util.encoders.Hex;
 
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
+
+import static com.recordins.recordin.Main.sendWebsocket;
 
 public class BlockchainLock<T> {
 
 
     private static Logger logger = LoggerFactory.getLogger(BlockchainLock.class);
     private final ConcurrentHashMap<T, ConcurrentLinkedQueue<Long>> cookieQueues = new ConcurrentHashMap();
+
 
     public BlockchainLock() {
 
@@ -85,12 +96,13 @@ public class BlockchainLock<T> {
         Long lockCookie = addToQueue(recordID);
 
         ConcurrentLinkedQueue<Long> cookieQueue = cookieQueues.get(recordID);
+        //methodLock.writeLock().unlock();
 
         if (cookieQueue.peek() != null) {
 
             if (!lockCookie.equals(cookieQueue.peek())) {
-                logger.trace("Thread " + lockCookie + "           for: " + recordID + " wait");
 
+                logger.trace("Thread " + lockCookie + "           for: " + recordID + " wait");
                 synchronized (lockCookie) {
                     try {
                         lockCookie.wait();
@@ -101,8 +113,10 @@ public class BlockchainLock<T> {
                         // never unlock access for new comming Threads.
                         cookieQueue.remove(lockCookie);
                         logger.error("Thread " + lockCookie + "           for: " + recordID + " interrupted while waiting for lockCookie", e);
+                    } finally {
                     }
                 }
+
             } else {
                 logger.trace("Thread " + lockCookie + " gets lock for: " + recordID);
             }
@@ -125,7 +139,7 @@ public class BlockchainLock<T> {
      *                           than given lockCookie
      */
     public synchronized void unlock(T recordID, long lockCookie) throws SecurityException {
-        logger.trace("START lock(T, long)");
+        logger.trace("START unlock(T, long)");
 
         // no further check required after successful check of record ID and lock owner
         checkLockOwner(recordID, lockCookie);
@@ -139,14 +153,28 @@ public class BlockchainLock<T> {
 
         if (lockCookieQueued != null) {
 
-            synchronized (lockCookieQueued) {
+            Thread t = new Thread() {
+                public void run() {
+                    Long lockCookieQueued = cookieQueue.peek();
+                    while (lockCookieQueued != null) {
+                        synchronized (lockCookieQueued) {
 
-                logger.trace("Thread " + lockCookieQueued + " gets lock for: " + recordID);
-                lockCookieQueued.notify();
-            }
+                            logger.trace("Thread " + lockCookieQueued + " gets lock for: " + recordID);
+                            lockCookieQueued.notify();
+
+                        }
+                        try {
+                            Thread.sleep(50);
+                        } catch (InterruptedException e) {
+
+                        }
+                        lockCookieQueued = cookieQueue.peek();
+                    }
+                }
+            };
+            t.start();
         }
-
-        logger.trace("END lock(int, long)");
+        logger.trace("END unlock(int, long)");
     }
 
 
